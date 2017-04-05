@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser')
 var app = express();
 
 //camps
@@ -8,14 +9,27 @@ var camps = [
     {name: "Mountatin Goat's Rest", image:"https://farm4.staticflickr.com/3872/14435096036_39db8f04bc.jpg"},
 ];
 
-// view engine setup
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.set('view engine', 'ejs');
 
 app.get("/", function (req, res) {
     res.render("landing");
 });
 app.get("/campgrounds", function (req, res) {
-    res.render("campgrounds");
+    res.render("campgrounds", {campgrounds:camps});
+});
+
+app.get("/campgrounds/new", function (req, res) {
+    res.render("new");
+});
+
+app.post("/campgrounds", function (req, res) {
+    console.log(req.body);
+    camps.push({name: req.body.name,image:req.body.image});
+    res.redirect("/campgrounds");
 });
 
 app.listen('3000', function () {
